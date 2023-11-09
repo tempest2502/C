@@ -17,6 +17,7 @@ namespace Bai5
         {
             InitializeComponent();
             LoadData();
+            
         }
         private void LoadData()
         {
@@ -38,6 +39,97 @@ namespace Bai5
             txtMaPT.Text = "";
             dtpNgayBD.Value = dtpNgayKT.Value = DateTime.Today;
             rbtA.Checked = true;
+        }
+        private KieuLoaiPhong GetLoaiPhong()
+        {
+            if (rbtA.Checked)
+                return KieuLoaiPhong.A;
+            else if (rbtB.Checked)
+                return KieuLoaiPhong.B;
+            else if (rbtC.Checked)
+                return KieuLoaiPhong.C;
+            else
+                return KieuLoaiPhong.D;
+        }
+        private void SetLoaiPhong(KieuLoaiPhong loaiPhong)
+        {
+            switch (loaiPhong)
+            {
+                case KieuLoaiPhong.A: rbtA.Checked = true; break;
+                case KieuLoaiPhong.B: rbtB.Checked = true; break;
+                case KieuLoaiPhong.C: rbtC.Checked = true; break;
+                case KieuLoaiPhong.D: rbtD.Checked = true; break;
+            }
+        }
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            if (xuly.tim(txtMaPT.Text) == null)
+            {
+                xuly.them(new CPhieuThue(txtMaPT.Text, dtpNgayBD.Value, dtpNgayKT.Value, txtTenKH.Text, GetLoaiPhong()));
+                hienthi();
+            }
+            else
+                MessageBox.Show("Ma bi trung");
+        }
+
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            if (dgvPT.SelectedRows.Count == 0) return;
+            int index = dgvPT.SelectedRows[0].Index;
+            xuly.XoaTaiViTri(index);
+            hienthi();
+        }
+
+        private void dgvPT_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            CPhieuThue pt = xuly.LayTaiViTri(e.RowIndex);
+            txtMaPT.Text = pt.MaPT;
+            txtTenKH.Text = pt.TenKH;
+            dtpNgayBD.Value= pt.NgayBD;
+            dtpNgayKT.Value= pt.NgayKT;
+            SetLoaiPhong(pt.LoaiPhong);
+        }
+
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            if (dgvPT.SelectedRows.Count == 0) return;
+            int index = dgvPT.SelectedRows[0].Index;
+            CPhieuThue pt=xuly.LayTaiViTri(index);
+            pt.NgayBD=dtpNgayBD.Value;
+            pt.NgayKT=dtpNgayKT.Value;
+            pt.TenKH=txtTenKH.Text;
+            pt.LoaiPhong = GetLoaiPhong();
+            xuly.Sua(pt);
+            hienthi();
+        }
+
+        private void btnLuuFile_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.ShowDialog();
+            if (saveFileDialog1.FileName != "")
+            {
+                if (xuly.LuuFile(saveFileDialog1.FileName))
+                    MessageBox.Show("Luu File THANH CONG");
+                else
+                    MessageBox.Show("Luu File THAT BAI");
+            }
+
+        }
+
+        private void btnMoFIle_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.ShowDialog();
+            if (openFileDialog1.FileName != "")
+            {
+                if (xuly.DocFile(openFileDialog1.FileName))
+                {
+                    hienthi();
+                    MessageBox.Show("Doc File THANH CONG");
+
+                }
+                else
+                    MessageBox.Show("Doc File THAT BAI");
+            }
         }
     }
 }

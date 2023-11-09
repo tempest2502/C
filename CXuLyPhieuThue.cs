@@ -36,6 +36,14 @@ namespace Bai5
             }
             return false;
         }
+        public void XoaTaiViTri(int index)
+        {
+            dsPT.RemoveAt(index);
+        }
+        public CPhieuThue LayTaiViTri(int index)
+        {
+            return dsPT[index];
+        }
         public void Xoa(string mapt)
         {
             CPhieuThue pt=tim(mapt);
